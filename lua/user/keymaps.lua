@@ -1,9 +1,9 @@
 local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
-keymap("n", "<Space>", "", opts)
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+keymap("n", "<Space>", "<c-f>", opts)
+vim.g.mapleader = ";"
+vim.g.maplocalleader = ";"
 
 keymap("n", "<C-i>", "<C-i>", opts)
 
@@ -32,7 +32,8 @@ vim.cmd [[:amenu 10.110 mousemenu.References <cmd>lua vim.lsp.buf.references()<C
 -- vim.cmd [[:amenu 10.120 mousemenu.-sep- *]]
 
 vim.keymap.set("n", "<RightMouse>", "<cmd>:popup mousemenu<CR>")
-vim.keymap.set("n", "<Tab>", "<cmd>:popup mousemenu<CR>")
+-- vim.keymap.set("n", "<Tab>", "<cmd>:popup mousemenu<CR>")
+vim.keymap.set("n", "<Tab>", ":b#<CR>")
 
 -- more good
 keymap({ "n", "o", "x" }, "<s-h>", "^", opts)
@@ -42,6 +43,30 @@ keymap({ "n", "o", "x" }, "<s-l>", "g_", opts)
 keymap({ "n", "x" }, "j", "gj", opts)
 keymap({ "n", "x" }, "k", "gk", opts)
 keymap("n", "<leader>w", ":lua vim.wo.wrap = not vim.wo.wrap<CR>", opts)
+keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { desc = "[U]ntotree toggle" })
 
+keymap("n", "<leader>gs", "<cmd>Git<cr>", { desc = "Git status" })
+keymap("n", "<leader>ga", "<cmd>Git add %<cr>", { desc = "Git add buffer" })
+keymap("n", "<leader>gA", "<cmd>Git add -A .<cr>", { desc = "Git add all" })
+keymap("n", "<leader>gB", "<cmd>GitBlameToggle<cr>", { desc = "Toggle Blame" })
+keymap("n", "<leader>gc", "<cmd>Git commit -v<cr>", { desc = "Git commit" })
+keymap("n", "<leader>gC", "<cmd>Git commit -a -v<cr>", { desc = "Git commit -a" })
+keymap("n", "<leader>gp", "<cmd>Git push -u origin HEAD<cr>", { desc = "Git push" })
+keymap("n", "<leader>gu", "<cmd>Git pull<cr>", { desc = "Git pull" })
 
-vim.api.nvim_set_keymap('t', '<C-;>', '<C-\\><C-n>', opts)
+vim.api.nvim_set_keymap("t", "<C-;>", "<C-\\><C-n>", opts)
+
+keymap({ "c", "i" }, "<C-\\>", "<C-^>", { desc = "switch language" })
+keymap({ "c", "i" }, "<C-/>", "<C-^>", { desc = "switch language" })
+keymap({ "c", "i" }, "<C-Space>", "<C-^>", { desc = "switch language" })
+
+keymap({ "n" }, "<C-/>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language" })
+keymap({ "n" }, "<C-\\>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language" })
+keymap({ "n" }, "<C-Space>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language" })
+
+keymap("n", "H", "<C-o>", opts)
+keymap("n", "L", "<C-i>", opts)
+
+-- mitigate insert-mode hell
+keymap("i", "<C-u>", "<c-g>u<c-u>", opts)
+keymap("i", "<C-w>", "<c-g>u<c-w>", opts)

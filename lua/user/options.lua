@@ -1,10 +1,12 @@
-vim.opt.backup = false -- creates a backup file
+-- vim.opt.backup = false -- creates a backup file
+vim.opt.backup = true -- creates a backup file
+vim.opt.backupdir = vim.fn.stdpath "data" .. "/backup"
 vim.opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 vim.opt.cmdheight = 1 -- more space in the neovim command line for displaying messages
 vim.opt.completeopt = { "menuone", "noselect" } -- mostly just for cmp
 vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
 -- vim.opt.fileencoding = "utf-8" -- the encoding written to a file
-vim.opt.hlsearch = true -- highlight all matches on previous search pattern
+vim.opt.hlsearch = false -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true -- ignore case in search patterns
 vim.opt.mouse = "a" -- allow the mouse to be used in neovim
 vim.opt.pumheight = 10 -- pop up menu height
@@ -52,3 +54,22 @@ vim.cmd [[set iskeyword+=-]]
 vim.g.netrw_banner = 0
 vim.g.netrw_mouse = 2
 
+vim.opt.spell = false
+vim.opt.spelllang = { "ru", "en" }
+vim.opt.keymap = "russian-yawerty"
+vim.opt.iminsert = 0
+vim.opt.imsearch = -1
+vim.opt.history = 10000 -- Use the 'history' option to set the number of lines from command mode that are remembered.
+vim.opt.wildignore = [[
+.git,.hg,.svn
+*.aux,*.out,*.toc
+*.o,*.obj,*.exe,*.dll,*.manifest,*.rbc,*.class
+*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp
+*.avi,*.divx,*.mp4,*.webm,*.mov,*.m2ts,*.mkv,*.vob,*.mpg,*.mpeg
+*.mp3,*.oga,*.ogg,*.wav,*.flac
+*.eot,*.otf,*.ttf,*.woff
+*.doc,*.pdf,*.cbr,*.cbz
+*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz,*.kgb
+*.swp,.lock,.DS_Store,._*
+*/tmp/*,*.so,*.swp,*.zip,**/node_modules/**,**/target/**,**.terraform/**"
+]]

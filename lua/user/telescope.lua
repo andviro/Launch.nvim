@@ -10,19 +10,43 @@ function M.config()
     ["<leader>fb"] = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
     ["<leader>fc"] = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
     ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Find files" },
+    ["<c-p>"] = { "<cmd>Telescope find_files<cr>", "Find files" },
     ["<leader>fp"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
     ["<leader>ft"] = { "<cmd>Telescope live_grep<cr>", "Find Text" },
     ["<leader>fh"] = { "<cmd>Telescope help_tags<cr>", "Help" },
     ["<leader>fl"] = { "<cmd>Telescope resume<cr>", "Last Search" },
     ["<leader>fr"] = { "<cmd>Telescope oldfiles<cr>", "Recent File" },
+    ["<Leader>gr"] = { "<CMD>lua require('telescope').extensions.git_worktree.git_worktrees()<CR>", "List wo[r]ktrees" },
+    ["<Leader>gR"] = {
+      "<CMD>lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>",
+      "c[R]eate worktree",
+    },
+    ["<leader>gf"] = { "<CMD>lua require('telescope.builtin').git_files()<CR>", "Search [G]it [F]iles" },
+    ["<leader>sf"] = { "<CMD>lua require('telescope.builtin').find_files()<CR>", "[S]earch [F]iles" },
+    ["<leader>sh"] = { "<CMD>lua require('telescope.builtin').help_tags()<CR>", "[S]earch [H]elp" },
+    ["<leader>sw"] = { "<CMD>lua require('telescope.builtin').grep_string()<CR>", "[S]earch current [W]ord" },
+    ["<leader>sg"] = { "<CMD>lua require('telescope.builtin').live_grep()<CR>", "[S]earch by [G]rep" },
+    ["<leader>sd"] = { "<CMD>lua require('telescope.builtin').diagnostics()<CR>", "[S]earch [D]iagnostics" },
   }
 
   local icons = require "user.icons"
   local actions = require "telescope.actions"
 
-
   require("telescope").setup {
     defaults = {
+      file_ignore_patterns = {
+        "^node_modules/",
+        "^.terraform/",
+        "%.jpg",
+        "%.png",
+        "^vendor/",
+        "^proto_vendor/",
+        "^.env/",
+        "^.venv/",
+        "^.git/",
+        "mock/",
+        "fakes/",
+      },
       prompt_prefix = icons.ui.Telescope .. " ",
       selection_caret = icons.ui.Forward .. " ",
       entry_prefix = "   ",

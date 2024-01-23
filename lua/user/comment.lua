@@ -16,7 +16,7 @@ function M.config()
   }
 
   wk.register {
-    ["<leader>/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment", mode = "v" },
+    ["K"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment", mode = "v" },
   }
 
   vim.g.skip_ts_context_commentstring_module = true
