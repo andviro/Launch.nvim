@@ -5,20 +5,8 @@ local M = {
   },
 }
 
-
 function M.config()
-  local servers = {
-    "lua_ls",
-    "cssls",
-    "html",
-    "tsserver",
-    "pyright",
-    "bashls",
-    "jsonls",
-    "gopls",
-    "bufls",
-  }
-
+  local servers = require("user.common.lsp").servers
   require("mason").setup {
     ui = {
       border = "rounded",

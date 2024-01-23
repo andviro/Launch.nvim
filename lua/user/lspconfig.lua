@@ -45,20 +45,7 @@ function M.config()
 
   local lspconfig = require "lspconfig"
   local icons = require "user.icons"
-
-  local servers = {
-    "lua_ls",
-    "cssls",
-    "html",
-    "tsserver",
-    "eslint",
-    "tsserver",
-    "pyright",
-    "bashls",
-    "jsonls",
-    "yamlls",
-    "bufls",
-  }
+  local common = require "user.common.lsp"
 
   local default_diagnostic_config = {
     signs = {
@@ -94,9 +81,9 @@ function M.config()
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
   require("lspconfig.ui.windows").default_options.border = "rounded"
 
-  for _, server in pairs(servers) do
+  for _, server in pairs(common.servers) do
     local opts = {
-      on_attach = require("user.common.lsp").on_attach,
+      on_attach = common.on_attach,
       capabilities = M.common_capabilities(),
     }
 

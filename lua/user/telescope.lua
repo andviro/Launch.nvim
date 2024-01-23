@@ -1,16 +1,30 @@
 local M = {
   "nvim-telescope/telescope.nvim",
-  dependencies = { { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = true } },
+  dependencies = {
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make", lazy = true },
+    { "nvim-telescope/telescope-file-browser.nvim" },
+    { "ThePrimeagen/git-worktree.nvim" },
+  },
 }
 
 function M.config()
+  local telescope = require "telescope"
+  local actions = require "telescope.actions"
+  local action_layout = require "telescope.actions.layout"
+  local fb_actions = require("telescope").extensions.file_browser.actions
+  require("telescope").load_extension "git_worktree"
   local wk = require "which-key"
+  local my_fd = function(opts)
+    opts = opts or {}
+    opts.cwd = require("user.common.utils").get_cwd()
+    require("telescope.builtin").find_files(opts)
+  end
   wk.register {
     ["<leader>bb"] = { "<cmd>Telescope buffers previewer=false<cr>", "Find" },
     ["<leader>fb"] = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
     ["<leader>fc"] = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
     ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Find files" },
-    ["<c-p>"] = { "<cmd>Telescope find_files<cr>", "Find files" },
+    ["<c-p>"] = { my_fd, "Find files" },
     ["<leader>fp"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
     ["<leader>ft"] = { "<cmd>Telescope live_grep<cr>", "Find Text" },
     ["<leader>fh"] = { "<cmd>Telescope help_tags<cr>", "Help" },
@@ -29,10 +43,43 @@ function M.config()
     ["<leader>sd"] = { "<CMD>lua require('telescope.builtin').diagnostics()<CR>", "[S]earch [D]iagnostics" },
   }
 
-  local icons = require "user.icons"
-  local actions = require "telescope.actions"
-
-  require("telescope").setup {
+  telescope.setup {
+    preview = true,
+    extensions = {
+      fzf = {
+        fuzzy = true, -- false will only do exact matching
+        override_generic_sorter = true, -- override the generic sorter
+        override_file_sorter = true, -- override the file sorter
+        case_mode = "smart_case", -- or "ignore_case" or "respect_case" or "smart_case"
+      },
+      ["ui-select"] = {
+        require("telescope.themes").get_dropdown {},
+      },
+      file_browser = {
+        mappings = {
+          i = {
+            ["<c-n>"] = fb_actions.create,
+            ["<c-r>"] = fb_actions.rename,
+            -- ["<c-h>"] = actions.which_key,
+            ["<c-h>"] = fb_actions.toggle_hidden,
+            ["<c-x>"] = fb_actions.remove,
+            ["<c-p>"] = fb_actions.move,
+            ["<c-y>"] = fb_actions.copy,
+            ["<c-a>"] = fb_actions.select_all,
+          },
+        },
+      },
+    },
+    pickers = {
+      find_files = {
+        hidden = true,
+      },
+      buffers = {
+        ignore_current_buffer = true,
+        sort_lastused = true,
+      },
+      -- find_command = { "fd", "--hidden", "--type", "file", "--follow", "--strip-cwd-prefix" },
+    },
     defaults = {
       file_ignore_patterns = {
         "^node_modules/",
@@ -47,107 +94,82 @@ function M.config()
         "mock/",
         "fakes/",
       },
-      prompt_prefix = icons.ui.Telescope .. " ",
-      selection_caret = icons.ui.Forward .. " ",
-      entry_prefix = "   ",
-      initial_mode = "insert",
-      selection_strategy = "reset",
-      path_display = { "smart" },
-      color_devicons = true,
+      -- used for grep_string and live_grep
       vimgrep_arguments = {
         "rg",
+        "--follow",
         "--color=never",
         "--no-heading",
         "--with-filename",
         "--line-number",
         "--column",
         "--smart-case",
-        "--hidden",
-        "--glob=!.git/",
+        "--no-ignore",
+        "--trim",
       },
-
       mappings = {
         i = {
-          ["<C-n>"] = actions.cycle_history_next,
-          ["<C-p>"] = actions.cycle_history_prev,
-
-          ["<C-j>"] = actions.move_selection_next,
-          ["<C-k>"] = actions.move_selection_previous,
-        },
-        n = {
+          -- Close on first esc instead of going to normal mode
+          -- https://github.com/nvim-telescope/telescope.nvim/blob/master/lua/telescope/mappings.lua
           ["<esc>"] = actions.close,
-          ["j"] = actions.move_selection_next,
-          ["k"] = actions.move_selection_previous,
-          ["q"] = actions.close,
+          ["<C-j>"] = actions.move_selection_next,
+          ["<Down>"] = actions.move_selection_next,
+          ["<PageUp>"] = actions.results_scrolling_up,
+          ["<PageDown>"] = actions.results_scrolling_down,
+          ["<C-u>"] = actions.preview_scrolling_up,
+          ["<C-d>"] = actions.preview_scrolling_down,
+          ["<C-k>"] = actions.move_selection_previous,
+          ["<Up>"] = actions.move_selection_previous,
+          ["<C-q>"] = actions.send_selected_to_qflist,
+          ["<C-l>"] = actions.send_to_qflist,
+          ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
+          ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+          ["<cr>"] = actions.select_default,
+          ["<c-v>"] = actions.select_vertical,
+          ["<c-s>"] = actions.select_horizontal,
+          ["<c-t>"] = actions.select_tab,
+          ["<c-p>"] = action_layout.toggle_preview,
+          ["<c-o>"] = action_layout.toggle_mirror,
+          ["<c-h>"] = actions.which_key,
+          ["<c-x>"] = actions.delete_buffer,
         },
       },
-    },
-    pickers = {
-      live_grep = {
-        theme = "dropdown",
-      },
-
-      grep_string = {
-        theme = "dropdown",
-      },
-
-      find_files = {
-        theme = "dropdown",
-        previewer = false,
-      },
-
-      buffers = {
-        theme = "dropdown",
-        previewer = false,
-        initial_mode = "normal",
-        mappings = {
-          i = {
-            ["<C-d>"] = actions.delete_buffer,
-          },
-          n = {
-            ["dd"] = actions.delete_buffer,
-          },
+      prompt_prefix = "> ",
+      selection_caret = " ",
+      entry_prefix = "  ",
+      multi_icon = "<>",
+      initial_mode = "insert",
+      scroll_strategy = "cycle",
+      selection_strategy = "reset",
+      sorting_strategy = "descending",
+      layout_strategy = "horizontal",
+      layout_config = {
+        width = 0.95,
+        height = 0.85,
+        preview_cutoff = 120,
+        prompt_position = "bottom",
+        horizontal = {
+          preview_width = function(_, cols, _)
+            if cols > 200 then
+              return math.floor(cols * 0.4)
+            else
+              return math.floor(cols * 0.6)
+            end
+          end,
         },
+        vertical = { width = 0.9, height = 0.95, preview_height = 0.5 },
+        flex = { horizontal = { preview_width = 0.9 } },
       },
-
-      planets = {
-        show_pluto = true,
-        show_moon = true,
-      },
-
-      colorscheme = {
-        enable_preview = true,
-      },
-
-      lsp_references = {
-        theme = "dropdown",
-        initial_mode = "normal",
-      },
-
-      lsp_definitions = {
-        theme = "dropdown",
-        initial_mode = "normal",
-      },
-
-      lsp_declarations = {
-        theme = "dropdown",
-        initial_mode = "normal",
-      },
-
-      lsp_implementations = {
-        theme = "dropdown",
-        initial_mode = "normal",
-      },
-    },
-    extensions = {
-      fzf = {
-        fuzzy = true, -- false will only do exact matching
-        override_generic_sorter = true, -- override the generic sorter
-        override_file_sorter = true, -- override the file sorter
-        case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-      },
+      winblend = 0,
+      border = {},
+      borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+      color_devicons = true,
+      use_less = true,
+      set_env = { ["COLORTERM"] = "truecolor" }, -- default = nil,
     },
   }
-end
 
+  telescope.load_extension "fzf"
+  telescope.load_extension "file_browser"
+end
 return M

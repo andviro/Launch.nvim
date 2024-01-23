@@ -6,6 +6,13 @@ local M = {
 }
 
 function M.config()
+  local function imode()
+    if vim.o.iminsert == 1 then
+      return [[ru]]
+    else
+      return [[en]]
+    end
+  end
   require("lualine").setup {
     options = {
       component_separators = { left = "", right = "" },
@@ -13,7 +20,7 @@ function M.config()
       ignore_focus = { "NvimTree" },
     },
     sections = {
-      lualine_a = {},
+      lualine_a = { imode },
       lualine_b = { "branch" },
       lualine_c = { "diagnostics" },
       lualine_x = { "copilot", "filetype" },

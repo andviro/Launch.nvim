@@ -60,9 +60,9 @@ keymap({ "c", "i" }, "<C-\\>", "<C-^>", { desc = "switch language" })
 keymap({ "c", "i" }, "<C-/>", "<C-^>", { desc = "switch language" })
 keymap({ "c", "i" }, "<C-Space>", "<C-^>", { desc = "switch language" })
 
-keymap({ "n" }, "<C-/>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language" })
-keymap({ "n" }, "<C-\\>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language" })
-keymap({ "n" }, "<C-Space>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language" })
+keymap({ "n" }, "<C-/>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language", silent = true })
+keymap({ "n" }, "<C-\\>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language", silent = true })
+keymap({ "n" }, "<C-Space>", ":let &l:iminsert = !&l:iminsert<CR>", { desc = "switch language", silent = true })
 
 keymap("n", "H", "<C-o>", opts)
 keymap("n", "L", "<C-i>", opts)
