@@ -2,6 +2,7 @@ local M = {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
   dependencies = {
+    { "famiu/bufdelete.nvim" },
     {
       "hrsh7th/cmp-nvim-lsp",
       event = "InsertEnter",
@@ -42,6 +43,7 @@ local M = {
 function M.config()
   local cmp = require "cmp"
   local luasnip = require "luasnip"
+  local lspkind = require "lspkind"
   require("luasnip/loaders/from_vscode").lazy_load()
 
   vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
@@ -53,8 +55,8 @@ function M.config()
     return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
   end
 
-  local icons = require "user.icons"
-
+  -- local icons = require "user.icons"
+  --
   cmp.setup {
     snippet = {
       expand = function(args)
@@ -107,31 +109,48 @@ function M.config()
         "s",
       }),
     },
+
     formatting = {
       fields = { "kind", "abbr", "menu" },
-      format = function(entry, vim_item)
-        vim_item.kind = icons.kind[vim_item.kind]
-        vim_item.menu = ({
-          nvim_lsp = "",
-          nvim_lua = "",
-          luasnip = "",
-          buffer = "",
-          path = "",
-          emoji = "",
-        })[entry.source.name]
-
-        if entry.source.name == "emoji" then
-          vim_item.kind = icons.misc.Smiley
-          vim_item.kind_hl_group = "CmpItemKindEmoji"
-        end
-
-        if entry.source.name == "cmp_tabnine" then
-          vim_item.kind = icons.misc.Robot
-          vim_item.kind_hl_group = "CmpItemKindTabnine"
-        end
-
-        return vim_item
-      end,
+      -- format = function(entry, vim_item)
+      --   vim_item.kind = icons.kind[vim_item.kind]
+      --   vim_item.menu = ({
+      --     nvim_lsp = "",
+      --     nvim_lua = "",
+      --     luasnip = "",
+      --     buffer = "",
+      --     path = "",
+      --     emoji = "",
+      --   })[entry.source.name]
+      --
+      --   if entry.source.name == "emoji" then
+      --     vim_item.kind = icons.misc.Smiley
+      --     vim_item.kind_hl_group = "CmpItemKindEmoji"
+      --   end
+      --
+      --   if entry.source.name == "cmp_tabnine" then
+      --     vim_item.kind = icons.misc.Robot
+      --     vim_item.kind_hl_group = "CmpItemKindTabnine"
+      --   end
+      --
+      --   return vim_item
+      -- end,
+      format = lspkind.cmp_format {
+        with_text = false,
+        maxwidth = 50,
+        mode = "symbol",
+        menu = {
+          buffer = "BUF",
+          rg = "RG",
+          nvim_lsp = "LSP",
+          path = "PATH",
+          luasnip = "SNIP",
+          calc = "CALC",
+          spell = "SPELL",
+        },
+        show_labelDetails = true,
+      },
+      expandable_indicator = true,
     },
     sources = {
       { name = "copilot" },
@@ -150,11 +169,11 @@ function M.config()
     },
     window = {
       completion = {
-        border = "rounded",
+        -- border = "rounded",
         scrollbar = false,
       },
       documentation = {
-        border = "rounded",
+        -- border = "rounded",
       },
     },
     experimental = {

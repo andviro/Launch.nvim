@@ -82,7 +82,7 @@ function M.config()
     close_on_exit = true, -- close the terminal window when the process exits
     shell = nil, -- change the default shell
     float_opts = {
-      border = "rounded",
+      -- border = "rounded",
       winblend = 0,
       highlights = {
         border = "Normal",

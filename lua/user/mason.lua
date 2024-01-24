@@ -9,7 +9,7 @@ function M.config()
   local servers = require("user.common.lsp").servers
   require("mason").setup {
     ui = {
-      border = "rounded",
+      -- border = "rounded",
     },
   }
 

@@ -22,7 +22,7 @@ function M.config()
 
       -- These are passed to nvim_open_win
       -- anchor = "SW",
-      border = "rounded",
+      -- border = "rounded",
       -- 'editor' and 'win' will default to being centered
       relative = "cursor",
 
@@ -62,9 +62,9 @@ function M.config()
         position = "50%",
         size = nil,
         relative = "editor",
-        border = {
-          style = "rounded",
-        },
+        -- border = {
+        --   style = "rounded",
+        -- },
         buf_options = {
           swapfile = false,
           filetype = "DressingSelect",
@@ -82,7 +82,7 @@ function M.config()
       builtin = {
         -- These are passed to nvim_open_win
         -- anchor = "NW",
-        border = "rounded",
+        -- border = "rounded",
         -- 'editor' and 'win' will default to being centered
         relative = "editor",
 
@@ -110,7 +110,6 @@ function M.config()
           ["<C-c>"] = "Close",
           ["<CR>"] = "Confirm",
         },
-
       },
     },
   }
